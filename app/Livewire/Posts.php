@@ -7,12 +7,12 @@ use App\Models\Post;
 
 class Posts extends Component
 {
-    public $posts, $title, $body, $post_id;
+    public $posts, $name, $gender, $email, $phone, $grade, $post_id;
     public $isOpen = 0;
 
     public function render()
     {
-        $this->posts = \App\Models\Post::all();
+        $this->posts = Post::all();
         return view('livewire.posts');
     }
 
@@ -32,42 +32,57 @@ class Posts extends Component
         $this->isOpen = false;
     }
 
-    private function resetInputFields(){
-        $this->title = '';
-        $this->body = '';
+    private function resetInputFields()
+    {
+        $this->name = '';
+        $this->gender = '';
+        $this->email = '';
+        $this->phone = '';
+        $this->grade = '';
         $this->post_id = '';
     }
+
     public function store()
     {
         $this->validate([
-            'title' => 'required',
-            'body' => 'required',
+            'name' => 'required',
+            'gender' => 'required',
+            'email' => 'required|email',
+            'phone' => 'required|numeric',
+            'grade' => 'required'
         ]);
-   
+
         Post::updateOrCreate(['id' => $this->post_id], [
-            'title' => $this->title,
-            'body' => $this->body
+            'name' => $this->name,
+            'gender' => $this->gender,
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'grade' => $this->grade
         ]);
-  
+
         session()->flash('message', 
-            $this->post_id ? 'Post Telah Diupdate.' : 'Post Telah Dibuat.');
-  
+            $this->post_id ? 'Data is updated.' : 'Data is added.');
+
         $this->closeModal();
         $this->resetInputFields();
     }
+
     public function edit($id)
     {
         $post = Post::findOrFail($id);
         $this->post_id = $id;
-        $this->title = $post->title;
-        $this->body = $post->body;
-    
+        $this->name = $post->name;
+        $this->gender = $post->gender;
+        $this->email = $post->email;
+        $this->phone = $post->phone;
+        $this->grade = $post->grade;
+
         $this->openModal();
     }
+
     public function delete($id)
     {
         Post::find($id)->delete();
-        session()->flash('message', 'Post Telah Dihapus.');
+        session()->flash('message', 'Data has been deleted');
     }
 }
-

@@ -13,8 +13,12 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->text('body');
+            $table->string('name');
+            $table->enum('gender', ['Male', 'Female']);
+            $table->string('email')->unique();
+            $table->string('phone');
+            $table->string('grade');
+            $table->string('action')->nullable(); // Ensure it can be null to avoid errors
             $table->timestamps();
         });
     }
